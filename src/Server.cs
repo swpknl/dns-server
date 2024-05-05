@@ -74,8 +74,9 @@ while (true)
         foreach (var splitIntoSingularQuestion in message.SplitIntoSingularQuestions())
         {
             Console.WriteLine("split message");
-            resolverUdpClient.Send(splitIntoSingularQuestion.ToByteArray(), sourceEndPoint);
-            var resolverResponse = resolverUdpClient.Receive(ref sourceEndPoint);
+            var ip = new IPEndPoint(IPAddress.Any, 41232);
+            resolverUdpClient.Send(splitIntoSingularQuestion.ToByteArray(), ip);
+            var resolverResponse = resolverUdpClient.Receive(ref ip);
             var rsp =
                 DNSMessage.Read(resolverResponse, resolverResponse);
             Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
