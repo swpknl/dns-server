@@ -30,7 +30,7 @@ while (true)
 {
     if (resolverUdpClient is not null && args.Length > 0)
     {
-        byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
+        byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
         var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
@@ -60,7 +60,7 @@ while (true)
     }
     else
     {
-        byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
+        byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} : {receivedString}");
         var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
