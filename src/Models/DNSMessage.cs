@@ -70,6 +70,7 @@ namespace codecrafters_dns_server.src.Models
 
             Console.WriteLine("Offset: " + offset);
             var answers = new List<DNSAnswer>();
+            offset -= 5;
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
                 var q = DNSAnswer.Read(buffer[offset..], out offset);
