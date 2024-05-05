@@ -74,7 +74,7 @@ while (true)
         foreach (var dnsQuestion in questions)
         {
             Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
-            resolverUdpClient.Send(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray(), sourceEndPoint);
+            resolverUdpClient.Send(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray());
             var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
             Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
         }
