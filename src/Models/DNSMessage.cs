@@ -68,11 +68,10 @@ namespace codecrafters_dns_server.src.Models
                 questions.Add(q);
             }
 
-            offset += 10;
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer[offset..]);
+                var q = DNSAnswer.Read(buffer[offset..], out offset);
                 answers.Add(q);
             }
             var msg = new DNSMessage(header, questions, answers);

@@ -32,10 +32,10 @@ namespace codecrafters_dns_server.src.Models
             
         }
 
-        public static DNSAnswer Read(ReadOnlySpan<byte> buffer)
+        public static DNSAnswer Read(ReadOnlySpan<byte> buffer, out int offset)
         {
             var count = 0;
-            List<string> names = ReadLabels(buffer);
+            List<string> names = ReadLabels(buffer, out offset);
             var type = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
             var @class = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
@@ -57,21 +57,21 @@ namespace codecrafters_dns_server.src.Models
             return record;
         }
 
-        private static List<string> ReadLabels(ReadOnlySpan<byte> buffer)
+        private static List<string> ReadLabels(ReadOnlySpan<byte> buffer, out int offset)
         {
+            offset = 0;
             var labels = new List<string>();
-            Console.WriteLine(Encoding.UTF8.GetString(buffer));
-            var count = 0;
-            // read until null termination
-            while (buffer[0] != 0)
+            while (buffer[offset] != 0)
             {
-                var strLen = buffer[0];
-                Console.WriteLine(strLen);
-                var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
-                labels.Add(str);
-                buffer = buffer[(1 + strLen)..];
-                count += 1 + strLen;
+                var length = buffer[offset];
+                offset++;
+                labels.Add(Encoding.ASCII.GetString(buffer[offset..(offset + length)]));
+                offset += length;
             }
+
+            offset++;
+
+            return labels;
             return labels;
         }
 
