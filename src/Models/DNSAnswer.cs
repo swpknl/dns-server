@@ -66,13 +66,20 @@ namespace codecrafters_dns_server.src.Models
             Console.Write("Read Labels " + Encoding.UTF8.GetString(buffer) + "\t");
             while (buffer[offset] != 0)
             {
-                var length = buffer[offset];
-                Console.WriteLine("LEngth" + length);
-                offset++;
-                var value = Encoding.ASCII.GetString(buffer[offset..(length)]);
-                Console.WriteLine(value);
-                labels.Add(value);
-                offset += length;
+                try
+                {
+                    var length = buffer[offset];
+                    Console.WriteLine("LEngth" + length);
+                    offset++;
+                    var value = Encoding.ASCII.GetString(buffer[offset..(length)]);
+                    Console.WriteLine(value);
+                    labels.Add(value);
+                    offset += length;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
                 
             }
 
