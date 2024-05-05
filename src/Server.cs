@@ -51,7 +51,7 @@ while (true)
     List<DNSQuestion> questions = new List<DNSQuestion>();
     List<DNSAnswer> answers = new List<DNSAnswer>();
     byte[] response = null;
-    if (resolverUdpClient is not null && args.Length == 0)
+    if (resolverUdpClient is not null && args.Length > 0)
     {
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
