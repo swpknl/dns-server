@@ -28,17 +28,33 @@ namespace codecrafters_dns_server.src.Models
 
         public DNSQuestion FromBytes(byte[] array)
         {
-            var readonlySpan = new ReadOnlySpan<byte>(array);
-            var labelArray = Encoding.UTF8.GetString(readonlySpan[..^4]);
+            var span = new ReadOnlySpan<byte>(array);
+            var readonlySpan = span[12..];
+            var labelArray = ReadLabel(readonlySpan[..^4]);
             Console.WriteLine(labelArray);
             var type = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^4..]);
             var @class = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^2..]);
             return new DNSQuestion()
             {
-                Labels = labelArray.Split(".").ToList(),
+                Labels = labelArray,
                 Type = (DNSType)(type),
                 Class = (DNSClass)(@class)
             };
+        }
+
+        private List<string> ReadLabel(ReadOnlySpan<byte> buffer)
+        {
+            var labels = new List<string>();
+            // read until null termination
+            while (buffer[0] != 0)
+            {
+                var strLen = buffer[0];
+                var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
+                labels.Add(str);
+                buffer = buffer[(1 + strLen)..];
+            }
+
+            return labels;
         }
 
         public byte[] ToByteArray()
