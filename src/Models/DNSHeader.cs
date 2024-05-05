@@ -83,7 +83,7 @@ namespace codecrafters_dns_server.src.Models
             var truncation = GetBit(flags1, 7);
             var isRecursionDesired = GetBit(flags1, 8);
             var isRecursionAvailable = GetBit(flags2, 1);
-            var responseCode = (byte)(flags2 & 0xF);
+            var responseCode = (byte)(flags2 & 0xF) == 0 ? (byte)0 : (byte)4;
             var questionCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[4..]);
             var answerRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[6..]);
             var authorityRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[8..]);
