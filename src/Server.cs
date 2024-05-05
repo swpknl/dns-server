@@ -33,6 +33,7 @@ while (true)
     {
         Console.WriteLine("In custom");
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 5000);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -70,13 +71,13 @@ while (true)
             questions.Add(question);
         }
         
-        Console.WriteLine("In multiple questions");
         foreach (var dnsQuestion in questions)
         {
             Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
-            resolverUdpClient.Send(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray());
-            var answerBytes = await resolverUdpClient.ReceiveAsync();
-            Console.WriteLine(Encoding.UTF8.GetString(answerBytes.Buffer));
+            var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { dnsQuestion }, null);
+            resolverUdpClient.Send(dnsMessage.ToByteArray(), resolverEndpoint);
+            var answerBytes = resolverUdpClient.Receive(ref resolverEndpoint);
+            Console.WriteLine("Answer: " + Encoding.UTF8.GetString(answerBytes));
         }
         
 
