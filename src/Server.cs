@@ -74,10 +74,10 @@ while (true)
         foreach (var splitIntoSingularQuestion in message.SplitIntoSingularQuestions())
         {
             Console.WriteLine("split message");
-            await resolverUdpClient.SendAsync(splitIntoSingularQuestion.ToByteArray());
-            var resolverResponse = await resolverUdpClient.ReceiveAsync();
+            resolverUdpClient.Send(splitIntoSingularQuestion.ToByteArray(), resolverEndPoint);
+            var resolverResponse = resolverUdpClient.Receive(ref resolverEndPoint);
             var rsp =
-                DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
+                DNSMessage.Read(resolverResponse, resolverResponse);
             Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
