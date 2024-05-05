@@ -10,6 +10,7 @@ Console.WriteLine("Logs from your program will appear here!");
 
 // Uncomment this block to pass the first stage
 // // Resolve UDP address
+IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
 UdpClient resolverUdpClient = null;
 if (args.Length > 0 && args[0] == "--resolver")
 {
@@ -28,7 +29,6 @@ while (true)
         // Create UDP socket
         UdpClient udpClient = new UdpClient(udpEndPoint);
         // Receive data
-        IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -55,7 +55,7 @@ while (true)
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         var response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
-        await udpClient.SendAsync(response);
+        udpClient.Send(response, sourceEndPoint);
     }
     else
     {
@@ -107,7 +107,7 @@ while (true)
 
         var message = new DNSMessage(dnsHeader, questions, answers);
         response = message.ToByteArray();
-        await udpClient.SendAsync(response);
+        udpClient.Send(response, sourceEndPoint);
 
     }
 
