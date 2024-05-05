@@ -28,8 +28,9 @@ if (args.Length == 2 && args[0] == "--resolver")
 
 while (true)
 {
-    if (args.Length == 2 && resolverEndPoint != null)
+    if (resolverEndPoint != null)
     {
+        Console.WriteLine("In custom");
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
@@ -56,7 +57,7 @@ while (true)
         response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(resolverResponse.Buffer));
         await udpClient.SendAsync(response, sourceEndPoint);
-        break;
+        continue;
     }
     else
     {
