@@ -53,7 +53,7 @@ while (true)
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         //response = resolverResponse.Buffer;
-        Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
+        //Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
