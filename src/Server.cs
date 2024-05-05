@@ -17,8 +17,8 @@ IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
 byte[] response = null;
 // Create UDP socket
 UdpClient udpClient = new UdpClient(udpEndPoint);
-// Receive data
 IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
+// Receive data
 if (args.Length > 0 && args[0] == "--resolver")
 {
     var resolverAddress = args[1];
