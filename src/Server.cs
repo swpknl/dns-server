@@ -51,7 +51,7 @@ while (true)
     List<DNSQuestion> questions = new List<DNSQuestion>();
     List<DNSAnswer> answers = new List<DNSAnswer>();
     byte[] response = null;
-    if (resolverUdpClient is not null)
+    if (resolverUdpClient is not null && args.Length == 0)
     {
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
@@ -62,20 +62,11 @@ while (true)
         var offset = 12;
         for (int i = 0; i < dnsHeader.QuestionCount; i++)
         {
-            try
-            {
-                var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
-                offset += 12;
-                Console.WriteLine(string.Concat(questionQuery.Labels));
-                var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-                questions.Add(question);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception: " + e);
-                throw;
-            }
-
+            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+            offset += 12;
+            Console.WriteLine(string.Concat(questionQuery.Labels));
+            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+            questions.Add(question);
         }
 
         foreach (var question in questions)
@@ -89,7 +80,7 @@ while (true)
         response = message.ToByteArray();
 
     }
-    
+
 
     // Send response
     udpClient.Send(response, response.Length, sourceEndPoint);
