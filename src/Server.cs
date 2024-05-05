@@ -10,6 +10,13 @@ Console.WriteLine("Logs from your program will appear here!");
 
 // Uncomment this block to pass the first stage
 // // Resolve UDP address
+UdpClient resolverUdpClient = null;
+if (args.Length > 0 && args[0] == "--resolver")
+{
+    var resolverAddress = args[1];
+    var resolverIpAddress = IPEndPoint.Parse(resolverAddress);
+    resolverUdpClient = new UdpClient(resolverIpAddress.Address.ToString(), resolverIpAddress.Port);
+}
 IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
 int port = 2053;
 IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
@@ -43,34 +50,46 @@ while (true)
         .Build();
     List<DNSQuestion> questions = new List<DNSQuestion>();
     List<DNSAnswer> answers = new List<DNSAnswer>();
-    var offset = 12;
-    for (int i = 0; i < dnsHeader.QuestionCount; i++)
+    byte[] response = null;
+    if (resolverUdpClient is not null)
     {
-        try
-        {
-            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
-            offset += 12;
-            Console.WriteLine(string.Concat(questionQuery.Labels));
-            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-            questions.Add(question);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Exception: " + e);
-            throw;
-        }
-        
+        var resolverQuery = resolverUdpClient.Send(receivedData);
+        var resolverResponse = await resolverUdpClient.ReceiveAsync();
+        response = resolverResponse.Buffer;
     }
-
-    foreach (var question in questions)     
+    else
     {
-        var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
-        Console.WriteLine(string.Concat(answer.Labels));
-        answers.Add(answer);
+        var offset = 12;
+        for (int i = 0; i < dnsHeader.QuestionCount; i++)
+        {
+            try
+            {
+                var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+                offset += 12;
+                Console.WriteLine(string.Concat(questionQuery.Labels));
+                var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+                questions.Add(question);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: " + e);
+                throw;
+            }
+
+        }
+
+        foreach (var question in questions)
+        {
+            var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
+            Console.WriteLine(string.Concat(answer.Labels));
+            answers.Add(answer);
+        }
+
+        var message = new DNSMessage(dnsHeader, questions, answers);
+        response = message.ToByteArray();
+
     }
     
-    var message = new DNSMessage(dnsHeader,questions, answers);
-    byte[] response = message.ToByteArray();
 
     // Send response
     udpClient.Send(response, response.Length, sourceEndPoint);
