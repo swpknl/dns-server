@@ -66,10 +66,12 @@ namespace codecrafters_dns_server.src.Models
                 var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
                 questions.Add(q);
             }
+
+            offset += 4;
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer);
+                var q = DNSAnswer.Read(buffer[offset..]);
                 answers.Add(q);
             }
             var msg = new DNSMessage(header, questions, answers);
