@@ -28,7 +28,7 @@ if (args.Length == 2 && args[0] == "--resolver")
 
 while (true)
 {
-    if (resolverUdpClient != null && args.Length == 2 && resolverEndPoint != null)
+    if (args.Length == 2 && resolverEndPoint != null)
     {
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
