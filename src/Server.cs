@@ -37,7 +37,7 @@ while (true)
         .SetReserved(dnsHeaderQuery.Reserved)
         .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
         .SetQuestionCount(dnsHeaderQuery.QuestionCount)
-        .SetAnswerRecordCount(dnsHeaderQuery.AnswerRecordCount)
+        .SetAnswerRecordCount(1)
         .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
         .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
         .Build();
