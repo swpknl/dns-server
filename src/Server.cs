@@ -48,10 +48,10 @@ while (true)
             .SetRecursionAvailable(dnsHeaderQuery.RecursionAvailable)
             .SetReserved(dnsHeaderQuery.Reserved)
             .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
-            .SetQuestionCount(dnsHeaderQuery.QuestionCount)
+            .SetQuestionCount(0)
             .SetAnswerRecordCount(dnsHeaderQuery.QuestionCount)
-            .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
-            .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
+            .SetAuthorityRecordCount(0)
+            .SetAdditionalRecordCount(0)
             .Build();
         //var resolverQuery = resolverUdpClient.Send(receivedData);
         //var resolverResponse = await resolverUdpClient.ReceiveAsync();
