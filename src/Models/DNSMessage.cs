@@ -58,6 +58,7 @@ namespace codecrafters_dns_server.src.Models
 
         public static DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
+            Console.WriteLine("Original " + Encoding.UTF8.GetString(buffer));
             var header = new DNSHeader().FromBytes(buffer.ToArray());
             var questions = new List<DNSQuestion>();
             var offset = 12;
