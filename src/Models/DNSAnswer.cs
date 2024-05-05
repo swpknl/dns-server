@@ -60,6 +60,7 @@ namespace codecrafters_dns_server.src.Models
         private static List<string> ReadLabels(ReadOnlySpan<byte> buffer)
         {
             var labels = new List<string>();
+            Console.WriteLine(Encoding.UTF8.GetString(buffer));
             var count = 0;
             // read until null termination
             while (buffer[0] != 0)
