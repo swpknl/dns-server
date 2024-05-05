@@ -65,7 +65,7 @@ namespace codecrafters_dns_server.src.Models
             {
                 buffer = buffer[offset..];
                 var q = new DNSQuestion().FromBytes(buffer.ToArray(), out offset);
-                offset += 4;
+                offset += 5;
                 Console.WriteLine(string.Concat(q.Labels));
                 questions.Add(q);
             }
