@@ -62,6 +62,7 @@ while (true)
         var offset = 12;
         for (int i = 0; i < dnsHeader.QuestionCount; i++)
         {
+            Console.WriteLine("Parsing questions");
             var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
             offset += 12;
             Console.WriteLine(string.Concat(questionQuery.Labels));
@@ -71,6 +72,7 @@ while (true)
 
         if (questions.Count > 2)
         {
+            Console.WriteLine("In multiple questions");
             foreach (var dnsQuestion in questions)
             {
                 Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
