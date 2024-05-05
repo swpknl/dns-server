@@ -56,7 +56,7 @@ while (true)
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
-        await udpClient.SendAsync(response, resolverResponse.RemoteEndPoint);
+        await udpClient.SendAsync(response, sourceEndPoint);
     }
     else
     {
