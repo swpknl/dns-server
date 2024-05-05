@@ -46,7 +46,7 @@ namespace codecrafters_dns_server.src.Models
             count += 4;
             var dataLength = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
-            var data = (buffer.Slice(count, dataLength).ToArray()).ToList();
+            var data = buffer[^count..].ToArray().ToList();
             count += dataLength;
             var record = new DNSAnswer()
             {
