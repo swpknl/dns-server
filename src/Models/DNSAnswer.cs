@@ -6,23 +6,18 @@ using System.Threading.Tasks;
 
 namespace codecrafters_dns_server.src.Models
 {
-    public class DNSQuestion
+    public class DNSAnswer
     {
         public List<string> Labels { get; set; }
         public DNSType Type { get; set; }
         public DNSClass Class { get; set; }
-
-        public DNSQuestion(List<string> labels, DNSType dnsType, DNSClass dnsClass)
-        {
-            this.Labels = labels;
-            this.Type = dnsType;
-            this.Class = dnsClass;
-        }
+        public byte TTL { get; set; }
+        public ushort Length { get; set; }
+        public ushort Data { get; set; }
 
         public byte[] ToByteArray()
         {
-            var bytes =
-                new List<byte>(Labels.Count + 1 + Labels.Sum(x => x.Length) + 4);
+            var bytes = new List<byte>();
             foreach (var label in Labels)
             {
                 bytes.Add((byte)label.Length);
@@ -34,7 +29,15 @@ namespace codecrafters_dns_server.src.Models
             bytes.Add((byte)((short)Type & 0xFF));
             bytes.Add((byte)((short)Class >> 8));
             bytes.Add((byte)((short)Class & 0xFF));
-            return bytes.ToArray();
+            bytes.Add((byte)(TimeToLive >> 24));
+            bytes.Add((byte)(TimeToLive >> 16));
+            bytes.Add((byte)(TimeToLive >> 8));
+            bytes.Add((byte)(TimeToLive & 0xFF));
+            bytes.Add((byte)(Data.Count >> 8));
+            bytes.Add((byte)(Data.Count & 0xFF));
+            bytes.AddRange(Data);
+
+            return new byte[] { };
         }
     }
 }

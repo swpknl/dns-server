@@ -37,7 +37,7 @@ while (true)
         .SetReserved(0)
         .SetResponseCode(0)
         .SetQuestionCount(1)
-        .SetAnswerRecordCount(0)
+        .SetAnswerRecordCount(1)
         .SetAuthorityRecordCount(0)
         .SetAdditionalRecordCount(0)
         .Build();

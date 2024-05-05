@@ -11,11 +11,13 @@ namespace codecrafters_dns_server.src.Models
     {
         private readonly DNSHeader header;
         private readonly DNSQuestion question;
+        private readonly DNSAnswer answer;
         
-        public DNSMessage(DNSHeader header, DNSQuestion dnsQuestion)
+        public DNSMessage(DNSHeader header, DNSQuestion dnsQuestion, DNSAnswer dnsAnswer)
         {
             this.header = header;
             this.question = dnsQuestion;
+            this.answer = dnsAnswer;
         }
 
         public byte[] ToByteArray()
@@ -23,6 +25,7 @@ namespace codecrafters_dns_server.src.Models
             var bytes = new List<byte>();
             bytes.AddRange(this.header.ToByteArray());
             bytes.AddRange(question.ToByteArray());
+            bytes.AddRange(answer.ToByteArray());
             return bytes.ToArray();
         }
     }
