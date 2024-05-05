@@ -60,10 +60,11 @@ namespace codecrafters_dns_server.src.Models
         {
             var dnsHeader = new DNSHeader().FromBytes(buffer.ToArray());
             var count = 12;
+            int offset = 12;
             var questions = new List<DNSQuestion>();
             for (int i = 0; i < dnsHeader.QuestionCount; i++)
             {
-                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out int offset);
+                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out offset);
                 count += offset;
                 buffer = buffer[offset..];
                 questions.Add(q);
@@ -71,7 +72,7 @@ namespace codecrafters_dns_server.src.Models
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer.ToArray(), out int offset);
+                var q = DNSAnswer.Read(buffer.ToArray(), out offset);
                 count += offset;
                 buffer = buffer[offset..];
                 answers.Add(q);
