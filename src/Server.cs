@@ -75,8 +75,8 @@ while (true)
         {
             Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
             resolverUdpClient.Send(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray());
-            var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
-            Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
+            var answerBytes = await resolverUdpClient.ReceiveAsync();
+            Console.WriteLine(Encoding.UTF8.GetString(answerBytes.Buffer));
         }
         
 
