@@ -53,10 +53,10 @@ while (true)
             .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
             .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
             .Build();
-        var resolverQuery = resolverUdpClient.Send(receivedData);
-        var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        response = resolverResponse.Buffer;
-        Console.WriteLine("Response : " + Encoding.UTF8.GetString(resolverResponse.Buffer));
+        //var resolverQuery = resolverUdpClient.Send(receivedData);
+        //var resolverResponse = await resolverUdpClient.ReceiveAsync();
+        //response = resolverResponse.Buffer;
+        //Console.WriteLine("Response : " + Encoding.UTF8.GetString(resolverResponse.Buffer));
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
@@ -69,17 +69,14 @@ while (true)
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
             questions.Add(question);
         }
-
-        if (questions.Count > 2)
+        
+        Console.WriteLine("In multiple questions");
+        foreach (var dnsQuestion in questions)
         {
-            Console.WriteLine("In multiple questions");
-            foreach (var dnsQuestion in questions)
-            {
-                Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
-                await resolverUdpClient.SendAsync(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray(), sourceEndPoint);
-                var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
-                Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
-            }
+            Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
+            await resolverUdpClient.SendAsync(new DNSMessage(dnsHeader, new List<DNSQuestion>(){dnsQuestion}, null).ToByteArray(), sourceEndPoint);
+            var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
+            Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
         }
         
 
