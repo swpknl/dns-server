@@ -74,7 +74,7 @@ while (true)
         {
             Console.WriteLine("split message");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
-            resolverUdpClient.Send(new DNSMessage(dnsHeader, new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
+            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
