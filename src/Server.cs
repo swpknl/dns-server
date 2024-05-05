@@ -41,8 +41,10 @@ while (true)
         .SetAuthorityRecordCount(0)
         .SetAdditionalRecordCount(0)
         .Build();
-    var question = new DNSQuestion(new List<string>{"codecrafters", "io" }, DNSType.A, DNSClass.IN);
-    var message = new DNSMessage(dnsHeader,question);
+    var labels = new List<string> { "codecrafters", "io" };
+    var question = new DNSQuestion(labels, DNSType.A, DNSClass.IN);
+    var answer = new DNSAnswer(labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
+    var message = new DNSMessage(dnsHeader,question, answer);
     byte[] response = message.ToByteArray();
 
     // Send response
