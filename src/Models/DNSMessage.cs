@@ -9,9 +9,9 @@ namespace codecrafters_dns_server.src.Models
 {
     public class DNSMessage
     {
-        public readonly DNSHeader header;
-        public readonly List<DNSQuestion> questions;
-        public readonly List<DNSAnswer> answers;
+        public  DNSHeader header;
+        public List<DNSQuestion> questions;
+        public List<DNSAnswer> answers;
         
         public DNSMessage(DNSHeader header, List<DNSQuestion> dnsQuestion, List<DNSAnswer> dnsAnswer)
         {

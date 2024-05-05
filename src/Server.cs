@@ -49,7 +49,7 @@ while (true)
             .SetRecursionAvailable(dnsHeaderQuery.RecursionAvailable)
             .SetReserved(dnsHeaderQuery.Reserved)
             .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
-            .SetQuestionCount(1)
+            .SetQuestionCount(dnsHeaderQuery.QuestionCount)
             .SetAnswerRecordCount(dnsHeaderQuery.QuestionCount)
             .SetAuthorityRecordCount(0)
             .SetAdditionalRecordCount(0)
@@ -61,10 +61,15 @@ while (true)
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
-        var message = new DNSMessage(dnsHeader, new List<DNSQuestion>(), null);
-        foreach (var msg in message.SplitIntoSingularQuestions())
+        var message = new DNSMessage(dnsHeader, new List<DNSQuestion>(), new List<DNSAnswer>());
+        for (int i = 0; i < dnsHeader.QuestionCount; i++)
         {
-            var splitMessage = msg.ToByteArray();
+            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+            offset += 12;
+            Console.WriteLine(string.Concat(questionQuery.Labels));
+            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+            questions.Add(question);
+            var splitMessage = message.ToByteArray();
             Console.WriteLine("split message");
             await resolverUdpClient.SendAsync(splitMessage);
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
