@@ -10,8 +10,15 @@ Console.WriteLine("Logs from your program will appear here!");
 
 // Uncomment this block to pass the first stage
 // // Resolve UDP address
-IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
 UdpClient resolverUdpClient = null;
+IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+int port = 2053;
+IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
+byte[] response = null;
+// Create UDP socket
+UdpClient udpClient = new UdpClient(udpEndPoint);
+// Receive data
+IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
 if (args.Length > 0 && args[0] == "--resolver")
 {
     var resolverAddress = args[1];
@@ -23,12 +30,6 @@ while (true)
 {
     if (resolverUdpClient is not null && args.Length > 0)
     {
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-        int port = 2053;
-        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
-        // Create UDP socket
-        UdpClient udpClient = new UdpClient(udpEndPoint);
-        // Receive data
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -53,19 +54,11 @@ while (true)
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        var response = resolverResponse.Buffer;
+        response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
-        udpClient.Send(response, sourceEndPoint);
     }
     else
     {
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-        int port = 2053;
-        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
-        // Create UDP socket
-        UdpClient udpClient = new UdpClient(udpEndPoint);
-        byte[] response = null;
-        // Create UDP socket
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} : {receivedString}");
@@ -107,11 +100,11 @@ while (true)
 
         var message = new DNSMessage(dnsHeader, questions, answers);
         response = message.ToByteArray();
-        udpClient.Send(response, sourceEndPoint);
 
     }
 
 
     // Send response
+    udpClient.Send(response, response.Length, sourceEndPoint);
 }
 
