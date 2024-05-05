@@ -50,12 +50,31 @@ while (true)
             .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
             .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
             .Build();
-        List<DNSQuestion> questions = new List<DNSQuestion>();
-        List<DNSAnswer> answers = new List<DNSAnswer>();
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        response = resolverResponse.Buffer;
+        //response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
+        List<DNSQuestion> questions = new List<DNSQuestion>();
+        List<DNSAnswer> answers = new List<DNSAnswer>();
+        var offset = 12;
+        for (int i = 0; i < dnsHeader.QuestionCount; i++)
+        {
+            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+            offset += 12;
+            Console.WriteLine(string.Concat(questionQuery.Labels));
+            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+            questions.Add(question);
+        }
+
+        foreach (var question in questions)
+        {
+            var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
+            Console.WriteLine(string.Concat(answer.Labels));
+            answers.Add(answer);
+        }
+
+        var message = new DNSMessage(dnsHeader, questions, answers);
+        response = message.ToByteArray();
         await udpClient.SendAsync(response, sourceEndPoint);
     }
     else
