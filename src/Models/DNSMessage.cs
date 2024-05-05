@@ -63,7 +63,7 @@ namespace codecrafters_dns_server.src.Models
             var offset = 12;
             for (int i = 0; i < header.QuestionCount; i++)
             {
-                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out offset);
+                var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
                 questions.Add(q);
             }
             var answers = new List<DNSAnswer>();
