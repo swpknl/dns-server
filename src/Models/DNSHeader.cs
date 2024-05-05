@@ -73,10 +73,10 @@ namespace codecrafters_dns_server.src.Models
 
         public DNSHeader FromBytes(byte[] bytes)
         {
-            var id = BinaryPrimitives.ReadUInt16BigEndian(bytes);
-            var flags = bytes[2..];
-            var flags1 = flags[0];
-            var flags2 = flags[1];
+            var span = new ReadOnlySpan<byte>(bytes);
+            var id = (ushort)(span[0] << 8 | span[1]);
+            var flags1 = span[2];
+            var flags2 = span[3];
             var isQuery = !GetBit(flags1, 1);
             var opCode = (byte)((flags1 >> 3) & 0xF);
             var isAuthoritativeAnswer = GetBit(flags1, 6);
@@ -84,10 +84,10 @@ namespace codecrafters_dns_server.src.Models
             var isRecursionDesired = GetBit(flags1, 8);
             var isRecursionAvailable = GetBit(flags2, 1);
             var responseCode = (byte)(flags2 & 0xF);
-            var questionCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[4..]);
-            var answerRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[6..]);
-            var authorityRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[8..]);
-            var additionalRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[10..]);
+            var questionCount = (ushort)(span[4] << 8 | span[5]);
+            var answerRecordCount = (ushort)(span[6] << 8 | span[7]);
+            var authorityRecordCount = (ushort)(span[8] << 8 | span[9]);
+            var additionalRecordCount = (ushort)(span[10] << 8 | span[11]);
             return new DNSHeader()
             {
                 ID = id,
