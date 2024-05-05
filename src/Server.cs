@@ -56,6 +56,7 @@ while (true)
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         response = resolverResponse.Buffer;
+        Console.WriteLine(Encoding.UTF8.GetString(response));
     }
     else
     {
