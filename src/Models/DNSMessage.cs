@@ -39,5 +39,30 @@ namespace codecrafters_dns_server.src.Models
             
             return bytes.ToArray();
         }
+
+        public IEnumerable<DNSMessage> SplitIntoSingularQuestions()
+        {
+            foreach (var question in questions)
+            {
+                var header = this.header.Copy();
+                header.QuestionCount = 0;
+                header.AnswerRecordCount = 0;
+                header.AdditionalRecordCount = 0;
+                header.AuthorityRecordCount = 0;
+                var msg = new DNSMessage(this.header, new List<DNSQuestion>(){question}, null);
+                yield return msg;
+            }
+        }
+
+        public void AddQuestion(DNSQuestion question)
+        {
+            this.questions.Add(question);
+            header.QuestionCount++;
+        }
+        public void AddAnswer(DNSAnswer record)
+        {
+            answers.Add(record);
+            header.AnswerRecordCount++;
+        }
     }
 }

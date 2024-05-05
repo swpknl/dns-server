@@ -109,5 +109,17 @@ namespace codecrafters_dns_server.src.Models
         {
             return (b & (1 << 8 - bitNumber)) != 0;
         }
+
+        public DNSHeader Copy()
+        {
+            return new DNSHeader
+            {
+                ID = ID,
+                QuestionCount = QuestionCount,
+                AnswerRecordCount = AnswerRecordCount,
+                AuthorityRecordCount = AuthorityRecordCount,
+                AdditionalRecordCount = AdditionalRecordCount
+            };
+        }
     }
 }
