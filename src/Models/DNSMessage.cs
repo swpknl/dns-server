@@ -64,10 +64,11 @@ namespace codecrafters_dns_server.src.Models
             for (int i = 0; i < header.QuestionCount; i++)
             {
                 var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
+                Console.WriteLine(string.Concat(q.Labels));
                 questions.Add(q);
             }
 
-            offset += 4;
+            offset += 1;
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
