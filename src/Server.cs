@@ -17,20 +17,19 @@ if (args.Length > 0 && args[0] == "--resolver")
     var resolverIpAddress = IPEndPoint.Parse(resolverAddress);
     resolverUdpClient = new UdpClient(resolverIpAddress.Address.ToString(), resolverIpAddress.Port);
 }
-IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-int port = 2053;
-IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
-
-// Create UDP socket
-UdpClient udpClient = new UdpClient(udpEndPoint);
 
 while (true)
 {
-    // Receive data
-    IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
-    byte[] response = null;
     if (resolverUdpClient is not null && args.Length > 0)
     {
+        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        int port = 2053;
+        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
+        byte[] response = null;
+        // Create UDP socket
+        UdpClient udpClient = new UdpClient(udpEndPoint);
+        // Receive data
+        IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -57,12 +56,19 @@ while (true)
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
+        await udpClient.SendAsync(response);
     }
     else
     {
+        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        int port = 2053;
+        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
+        byte[] response = null;
+        // Create UDP socket
+        UdpClient udpClient = new UdpClient(udpEndPoint);
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
-        Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
+        Console.WriteLine($"Received {receivedData.Length} : {receivedString}");
         var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
         Console.WriteLine(dnsHeaderQuery.ResponseCode);
         // Create an empty response
@@ -101,11 +107,11 @@ while (true)
 
         var message = new DNSMessage(dnsHeader, questions, answers);
         response = message.ToByteArray();
+        await udpClient.SendAsync(response);
 
     }
 
 
     // Send response
-    udpClient.Send(response, response.Length, sourceEndPoint);
 }
 
