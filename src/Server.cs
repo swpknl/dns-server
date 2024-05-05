@@ -16,7 +16,7 @@ int port = 2053;
 IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
 byte[] response = null;
 // Create UDP socket
-UdpClient udpClient = new UdpClient(udpEndPoint)
+UdpClient udpClient = new UdpClient(udpEndPoint);
 // Receive data
 if (args.Length > 0 && args[0] == "--resolver")
 {
