@@ -59,13 +59,20 @@ namespace codecrafters_dns_server.src.Models
         public static DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
             var header = new DNSHeader().FromBytes(buffer.ToArray());
+            var questions = new List<DNSQuestion>();
+            var offset = 12;
+            for (int i = 0; i < header.QuestionCount; i++)
+            {
+                var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
+                questions.Add(q);
+            }
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer);
+                var q = DNSAnswer.Read(buffer[offset..]);
                 answers.Add(q);
             }
-            var msg = new DNSMessage(header, new List<DNSQuestion>(), answers);
+            var msg = new DNSMessage(header, questions, answers);
             return msg;
         }
     }
