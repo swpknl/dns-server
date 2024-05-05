@@ -68,12 +68,8 @@ while (true)
             Console.WriteLine("Labels" + string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
             questions.Add(question);
-        }
-        
-        foreach (var dnsQuestion in questions)
-        {
-            Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
-            var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { dnsQuestion }, null);
+            Console.WriteLine("Question: " + string.Concat(question.Labels));
+            var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { question}, null);
             IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 50004);
             await resolverUdpClient.SendAsync(dnsMessage.ToByteArray());
             var answerBytes = await resolverUdpClient.ReceiveAsync();
