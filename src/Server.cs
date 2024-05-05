@@ -25,6 +25,7 @@ while (true)
     string receivedString = Encoding.ASCII.GetString(receivedData);
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
     var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
+    Console.WriteLine(dnsHeaderQuery.ResponseCode);
     // Create an empty response
     var dnsHeader = new DnsHeaderBuilder().SetID(dnsHeaderQuery.ID)
         .SetQueryResponseIndicator(dnsHeaderQuery.QueryResponseIndicator)
