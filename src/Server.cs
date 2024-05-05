@@ -41,9 +41,9 @@ while (true)
         .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
         .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
         .Build();
-    var labels = new List<string> { "codecrafters", "io" };
-    var question = new DNSQuestion(labels, DNSType.A, DNSClass.IN);
-    var answer = new DNSAnswer(labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
+    var questionQuery = new DNSQuestion().FromBytes(receivedData);
+    var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+    var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
     var message = new DNSMessage(dnsHeader,question, answer);
     byte[] response = message.ToByteArray();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,32 @@ namespace codecrafters_dns_server.src.Models
         public DNSType Type { get; set; }
         public DNSClass Class { get; set; }
 
+        public DNSQuestion()
+        {
+            
+        }
+
+
         public DNSQuestion(List<string> labels, DNSType dnsType, DNSClass dnsClass)
         {
             this.Labels = labels;
             this.Type = dnsType;
             this.Class = dnsClass;
+        }
+
+        public DNSQuestion FromBytes(byte[] array)
+        {
+            var readonlySpan = new ReadOnlySpan<byte>(array);
+            var labelArray = Encoding.UTF8.GetString(readonlySpan[..^4]);
+            Console.WriteLine(labelArray);
+            var type = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^4..]);
+            var @class = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^2..]);
+            return new DNSQuestion()
+            {
+                Labels = labelArray.Split(".").ToList(),
+                Type = (DNSType)(type),
+                Class = (DNSClass)(@class)
+            };
         }
 
         public byte[] ToByteArray()
