@@ -73,7 +73,9 @@ while (true)
             answers.AddRange(rsp.answers);
             await udpClient.SendAsync(resolverResponse.Buffer, sourceEndPoint);
         }
-        await udpClient.SendAsync(response, sourceEndPoint);
+
+        var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
+        await udpClient.SendAsync(dnsMessage.ToByteArray(), sourceEndPoint);
 
         continue;
     }
