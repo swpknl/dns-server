@@ -75,7 +75,6 @@ namespace codecrafters_dns_server.src.Models
             offset++;
 
             return labels;
-            return labels;
         }
 
         public byte[] ToByteArray()

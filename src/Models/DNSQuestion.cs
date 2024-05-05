@@ -31,7 +31,6 @@ namespace codecrafters_dns_server.src.Models
             var labelArray = ReadLabel(readonlySpan, out offset);
             var type = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^4..]);
             var @class = BinaryPrimitives.ReadInt16BigEndian(readonlySpan[^2..]);
-            offset += 4;
             return new DNSQuestion()
             {
                 Labels = labelArray,
