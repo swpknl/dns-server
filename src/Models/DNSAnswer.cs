@@ -63,7 +63,7 @@ namespace codecrafters_dns_server.src.Models
         {
             offset = 0;
             var labels = new List<string>();
-            Console.WriteLine("Read Labels " + Encoding.UTF8.GetString(buffer) + "\n");
+            Console.Write("Read Labels " + Encoding.UTF8.GetString(buffer) + "\n");
             while (buffer[offset] != 0)
             {
                 var length = buffer[offset];
