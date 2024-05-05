@@ -17,8 +17,9 @@ IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
 byte[] response = null;
 // Create UDP socket
 UdpClient udpClient = new UdpClient(udpEndPoint);
+IPEndPoint resolverEndPoint = null;
 // Receive data
-if (args.Length > 0 && args[0] == "--resolver")
+if (args.Length == 2 && args[0] == "--resolver")
 {
     var resolverAddress = args[1];
     var resolverIpAddress = IPEndPoint.Parse(resolverAddress);
@@ -27,7 +28,7 @@ if (args.Length > 0 && args[0] == "--resolver")
 
 while (true)
 {
-    if (resolverUdpClient is not null && args.Length > 0)
+    if (resolverUdpClient != null && args.Length == 2 && resolverEndPoint != null)
     {
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
@@ -52,30 +53,10 @@ while (true)
             .Build();
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        //response = resolverResponse.Buffer;
+        response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(resolverResponse.Buffer));
-        List<DNSQuestion> questions = new List<DNSQuestion>();
-        List<DNSAnswer> answers = new List<DNSAnswer>();
-        var offset = 12;
-        for (int i = 0; i < dnsHeader.QuestionCount; i++)
-        {
-            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
-            offset += 12;
-            Console.WriteLine(string.Concat(questionQuery.Labels));
-            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-            questions.Add(question);
-        }
-
-        foreach (var question in questions)
-        {
-            var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8,8,8,8]);
-            Console.WriteLine(string.Concat(answer.Labels));
-            answers.Add(answer);
-        }
-
-        var message = new DNSMessage(dnsHeader, questions, answers);
-        response = message.ToByteArray();
         await udpClient.SendAsync(response, sourceEndPoint);
+        break;
     }
     else
     {
