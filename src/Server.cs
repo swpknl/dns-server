@@ -16,8 +16,7 @@ int port = 2053;
 IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
 byte[] response = null;
 // Create UDP socket
-UdpClient udpClient = new UdpClient(udpEndPoint);
-IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
+UdpClient udpClient = new UdpClient(udpEndPoint)
 // Receive data
 if (args.Length > 0 && args[0] == "--resolver")
 {
@@ -30,6 +29,7 @@ while (true)
 {
     if (resolverUdpClient is not null && args.Length > 0)
     {
+        IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -60,6 +60,7 @@ while (true)
     }
     else
     {
+        IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} : {receivedString}");
