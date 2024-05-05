@@ -67,6 +67,7 @@ namespace codecrafters_dns_server.src.Models
             while (buffer[offset] != 0)
             {
                 var length = buffer[offset];
+                Console.WriteLine("LEngth" + length);
                 offset++;
                 var value = Encoding.ASCII.GetString(buffer[offset..(length)]);
                 Console.WriteLine(value);
