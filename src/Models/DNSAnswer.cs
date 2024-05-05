@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,36 @@ namespace codecrafters_dns_server.src.Models
             this.TTL = ttl;
             this.Length = length;  
             this.Data = data;
+        }
+
+        public DNSAnswer()
+        {
+            
+        }
+
+        public static DNSAnswer Read(ReadOnlySpan<byte> buffer)
+        {
+            var count = 0;
+            List<string> names = DNSQuestion.ReadLabel(buffer, out int offset);
+            var type = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
+            count += 2;
+            var @class = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
+            count += 2;
+            var ttl = BinaryPrimitives.ReadUInt32BigEndian(buffer[count..]);
+            count += 4;
+            var dataLength = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
+            count += 2;
+            var data = (buffer.Slice(count, dataLength).ToArray()).ToList();
+            count += dataLength;
+            var record = new DNSAnswer()
+            {
+                Labels = names,
+                Type = (DNSType)type,
+                Class = (DNSClass)@class,
+                TTL = (byte)ttl,
+                Data = data
+            };
+            return record;
         }
 
         public byte[] ToByteArray()

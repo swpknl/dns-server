@@ -67,9 +67,10 @@ while (true)
             var splitMessage = msg.ToByteArray();
             var sentBytes = await resolverUdpClient.SendAsync(splitMessage);
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
-            //var (_, rsp) =
-            //    message.Read(resolverResponse.Buffer, resolverResponse.Buffer);
-            //answers.AddRange(rsp.Answers);
+            var rsp =
+                DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
+            questions.AddRange(rsp.questions);
+            answers.AddRange(rsp.answers);
             await udpClient.SendAsync(resolverResponse.Buffer, sourceEndPoint);
         }
         await udpClient.SendAsync(response, sourceEndPoint);

@@ -40,7 +40,7 @@ namespace codecrafters_dns_server.src.Models
             };
         }
 
-        private List<string> ReadLabel(ReadOnlySpan<byte> buffer, out int offset)
+        public static List<string> ReadLabel(ReadOnlySpan<byte> buffer, out int offset)
         {
             offset = 0;
             var labels = new List<string>();
