@@ -66,6 +66,7 @@ namespace codecrafters_dns_server.src.Models
             while (buffer[0] != 0)
             {
                 var strLen = buffer[0];
+                Console.WriteLine(strLen);
                 var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
                 labels.Add(str);
                 buffer = buffer[(1 + strLen)..];
