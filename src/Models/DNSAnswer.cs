@@ -68,8 +68,12 @@ namespace codecrafters_dns_server.src.Models
             {
                 var length = buffer[offset];
                 offset++;
-                labels.Add(Encoding.ASCII.GetString(buffer[offset..(offset + length)]));
-                offset += length;
+                if (offset + length < buffer[offset..].Length)
+                {
+                    labels.Add(Encoding.ASCII.GetString(buffer[offset..(offset + length)]));
+                    offset += length;
+                }
+                
             }
 
             offset++;
