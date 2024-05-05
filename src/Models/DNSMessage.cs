@@ -73,9 +73,10 @@ namespace codecrafters_dns_server.src.Models
             Console.WriteLine("Offset: " + offset);
             Console.WriteLine("Buffer: " + Encoding.UTF8.GetString(buffer));
             var answers = new List<DNSAnswer>();
+            Console.WriteLine(header.AnswerRecordCount);
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer[offset..], out offset);
+                var q = DNSAnswer.Read(buffer, out offset);
                 answers.Add(q);
             }
             var msg = new DNSMessage(header, questions, answers);
