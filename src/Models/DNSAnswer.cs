@@ -77,7 +77,7 @@ namespace codecrafters_dns_server.src.Models
             }
 
             offset++;
-
+            Console.WriteLine("Parsed Answer labels " + string.Concat(labels));
             return labels;
         }
 
