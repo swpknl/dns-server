@@ -36,6 +36,7 @@ namespace codecrafters_dns_server.src.Models
         {
             var count = 0;
             List<string> names = ReadLabels(buffer, out offset);
+            Console.WriteLine(string.Concat(names));
             count = offset;
             var type = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
