@@ -65,7 +65,7 @@ while (true)
             Console.WriteLine("Parsing questions");
             var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
             offset += 12;
-            Console.WriteLine(string.Concat(questionQuery.Labels));
+            Console.WriteLine("Labels" + string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
             questions.Add(question);
         }
