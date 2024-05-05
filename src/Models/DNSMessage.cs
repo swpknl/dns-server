@@ -56,7 +56,7 @@ namespace codecrafters_dns_server.src.Models
             }
         }
 
-        public static DNSMessage Read(ReadOnlySpan<byte> buffer, List<DNSQuestion> question)
+        public static DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
             var header = new DNSHeader().FromBytes(buffer.ToArray());
             var answers = new List<DNSAnswer>();
@@ -65,7 +65,7 @@ namespace codecrafters_dns_server.src.Models
                 var q = DNSAnswer.Read(buffer);
                 answers.Add(q);
             }
-            var msg = new DNSMessage(header, question, answers);
+            var msg = new DNSMessage(header, new List<DNSQuestion>(), answers);
             return msg;
         }
     }
