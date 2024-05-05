@@ -29,10 +29,14 @@ namespace codecrafters_dns_server.src.Models
                 bytes.AddRange(question.ToByteArray());
             }
 
-            foreach (var answer in this.answers)
+            if (this.answers != null)
             {
-                bytes.AddRange(answer.ToByteArray());
+                foreach (var answer in this.answers)
+                {
+                    bytes.AddRange(answer.ToByteArray());
+                }
             }
+            
             
             return bytes.ToArray();
         }
