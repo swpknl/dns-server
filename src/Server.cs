@@ -65,7 +65,8 @@ while (true)
         foreach (var msg in message.SplitIntoSingularQuestions())
         {
             var splitMessage = msg.ToByteArray();
-            var sentBytes = await resolverUdpClient.SendAsync(splitMessage);
+            Console.WriteLine("split message");
+            await resolverUdpClient.SendAsync(splitMessage);
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             var rsp =
                 DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
