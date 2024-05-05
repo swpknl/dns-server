@@ -71,6 +71,7 @@ namespace codecrafters_dns_server.src.Models
             }
 
             Console.WriteLine("Offset: " + offset);
+            Console.WriteLine("Buffer: " + Encoding.UTF8.GetString(buffer));
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
