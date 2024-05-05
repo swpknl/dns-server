@@ -22,8 +22,8 @@ IPEndPoint resolverEndPoint = null;
 if (args.Length == 2 && args[0] == "--resolver")
 {
     var resolverAddress = args[1];
-    var resolverIpAddress = IPEndPoint.Parse(resolverAddress);
-    resolverUdpClient = new UdpClient(resolverIpAddress.Address.ToString(), resolverIpAddress.Port);
+    resolverEndPoint = IPEndPoint.Parse(resolverAddress);
+    resolverUdpClient = new UdpClient(resolverEndPoint.Address.ToString(), resolverEndPoint.Port);
 }
 
 while (true)
