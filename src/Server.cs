@@ -69,7 +69,7 @@ while (true)
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             var rsp =
                 DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
-            Console.WriteLine("Asnwers: " + rsp.answers.Select(x => x.Labels));
+            Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
             questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
         }
