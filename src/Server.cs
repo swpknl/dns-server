@@ -60,23 +60,22 @@ while (true)
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
-        //for (int i = 0; i < dnsHeader.QuestionCount; i++)
-        //{
-        //    Console.WriteLine("Parsing questions");
-        //    var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
-        //    offset += 12;
-        //    Console.WriteLine("Labels" + string.Concat(questionQuery.Labels));
-        //    var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-        //    questions.Add(question);
-        //    Console.WriteLine("Question: " + string.Concat(question.Labels));
-        //    var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { question},new List<DNSAnswer>{ new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8])});
-        //    IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 50004);
-        //    await resolverUdpClient.SendAsync(dnsMessage.ToByteArray());
-        //    var answerBytes = await resolverUdpClient.ReceiveAsync();
-        //    Console.WriteLine("Answer: " + Encoding.UTF8.GetString(answerBytes.Buffer));
-        //    await udpClient.SendAsync(answerBytes.Buffer, sourceEndPoint);
-        //}
-        response = new DNSParser(receivedData).getResponse();
+        for (int i = 0; i < dnsHeader.QuestionCount; i++)
+        {
+            Console.WriteLine("Parsing questions");
+            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+            offset += 12;
+            Console.WriteLine("Labels" + string.Concat(questionQuery.Labels));
+            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+            questions.Add(question);
+            Console.WriteLine("Question: " + string.Concat(question.Labels));
+            var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { question }, new List<DNSAnswer> { new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]) });
+            IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 50004);
+            await resolverUdpClient.SendAsync(receivedData);
+            var answerBytes = await resolverUdpClient.ReceiveAsync();
+            Console.WriteLine("Answer: " + Encoding.UTF8.GetString(answerBytes.Buffer));
+            await udpClient.SendAsync(answerBytes.Buffer, sourceEndPoint);
+        }
         await udpClient.SendAsync(response, sourceEndPoint);
 
         continue;
