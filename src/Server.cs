@@ -69,15 +69,19 @@ while (true)
             questions.Add(question);
         }
 
-        foreach (var dnsQuestion in questions)
+        if (questions.Count > 2)
         {
-            Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
-            await resolverUdpClient.SendAsync(dnsQuestion.ToByteArray(), sourceEndPoint);
-            var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
-            Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
+            foreach (var dnsQuestion in questions)
+            {
+                Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
+                await resolverUdpClient.SendAsync(dnsQuestion.ToByteArray(), sourceEndPoint);
+                var answerBytes = resolverUdpClient.Receive(ref sourceEndPoint);
+                Console.WriteLine(Encoding.UTF8.GetString(answerBytes));
+            }
         }
+        
 
-        //await udpClient.SendAsync(response, sourceEndPoint);
+        await udpClient.SendAsync(response, sourceEndPoint);
         
         continue;
     }
