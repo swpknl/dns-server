@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace codecrafters_dns_server.src.Models
+{
+    public class DNSHeader
+    {
+        public ushort ID { get; set; }
+        public bool QueryResponseIndicator { get; set; }
+        public byte OpCode { get; set; }
+        public bool AuthoritativeAnswer { get; set; }
+        public bool Truncation { get; set; }
+        public bool RecursionDesired { get; set; }
+        public bool RecursionAvailable { get; set; }
+        public byte Reserved { get; set; }
+        public byte ResponseCode { get; set; }
+        public ushort QuestionCount { get; set; }
+        public ushort AnswerRecordCount { get; set; }
+        public ushort AuthorityRecordCount { get; set; }
+        public ushort AdditionalRecordCount { get; set; }
+
+        public byte[] ToByteArray()
+        {
+            var bytes = new byte[12];
+            var span = bytes.AsSpan();
+            PutInt16ToSpan(span[..2], ID);
+            byte flags1 = 0;
+            byte flags2 = 0;
+            if (QueryResponseIndicator)
+            {
+                flags1 |= 1 << 7;
+            }
+            // 0000 1111
+            // 0 1111 0 0 0
+            flags1 |= (byte)(OpCode << 3);
+            if (AuthoritativeAnswer)
+            {
+                flags1 |= 1 << 2;
+            }
+            if (Truncation)
+            {
+                flags1 |= 1 << 1;
+            }
+            if (RecursionDesired)
+            {
+                flags1 |= 1;
+            }
+            if (RecursionAvailable)
+            {
+                flags2 |= 1 << 7;
+            }
+            flags2 |= ResponseCode;
+            span[2] = flags1;
+            span[3] = flags2;
+            PutInt16ToSpan(span[4..6], QuestionCount);
+            PutInt16ToSpan(span[6..8], AnswerRecordCount);
+            PutInt16ToSpan(span[8..10], AuthorityRecordCount);
+            PutInt16ToSpan(span[10..12], AdditionalRecordCount);
+            return bytes;
+        }
+
+        private void PutInt16ToSpan(Span<byte> span, ushort value)
+        {
+            span[0] = (byte)(value >> 8);
+            span[1] = (byte)(value & 0xFF);
+        }
+    }
+}

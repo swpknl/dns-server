@@ -2,6 +2,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using codecrafters_dns_server.src.Builders;
+using codecrafters_dns_server.src.Models;
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 Console.WriteLine("Logs from your program will appear here!");
@@ -25,7 +27,22 @@ while (true)
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
 
     // Create an empty response
-    byte[] response = Encoding.ASCII.GetBytes("");
+    var dnsHeader = new DnsHeaderBuilder().SetID(1234)
+        .SetQueryResponseIndicator(true)
+        .SetOpCode(0)
+        .SetAuthoritativeAnswer(false)
+        .SetTruncation(false)
+        .SetRecursionDesired(false)
+        .SetRecursionAvailable(false)
+        .SetReserved(0)
+        .SetResponseCode(0)
+        .SetQuestionCount(0)
+        .SetAnswerRecordCount(0)
+        .SetAuthorityRecordCount(0)
+        .SetAdditionalRecordCount(0)
+        .Build();
+    var message = new DNSMessage(dnsHeader);
+    byte[] response = message.ToByteArray();
 
     // Send response
     udpClient.Send(response, response.Length, sourceEndPoint);
