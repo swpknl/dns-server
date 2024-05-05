@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace codecrafters_dns_server.src.Models
 {
@@ -66,6 +69,45 @@ namespace codecrafters_dns_server.src.Models
         {
             span[0] = (byte)(value >> 8);
             span[1] = (byte)(value & 0xFF);
+        }
+
+        public DNSHeader FromBytes(byte[] bytes)
+        {
+            var id = BinaryPrimitives.ReadUInt16BigEndian(bytes);
+            var flags = bytes[2..];
+            var flags1 = flags[0];
+            var flags2 = flags[1];
+            var isQuery = !GetBit(flags1, 1);
+            var opCode = (byte)((flags1 >> 3) & 0xF);
+            var isAuthoritativeAnswer = GetBit(flags1, 6);
+            var truncation = GetBit(flags1, 7);
+            var isRecursionDesired = GetBit(flags1, 8);
+            var isRecursionAvailable = GetBit(flags2, 1);
+            var responseCode = (byte)(flags2 & 0xF);
+            var questionCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[4..]);
+            var answerRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[6..]);
+            var authorityRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[8..]);
+            var additionalRecordCount = BinaryPrimitives.ReadUInt16BigEndian(bytes[10..]);
+            return new DNSHeader()
+            {
+                ID = id,
+                QuestionCount = questionCount,
+                AnswerRecordCount = answerRecordCount,
+                AuthorityRecordCount = authorityRecordCount,
+                AdditionalRecordCount = additionalRecordCount,
+                QueryResponseIndicator = isQuery,
+                OpCode = opCode,
+                AuthoritativeAnswer = isAuthoritativeAnswer,
+                Truncation = truncation,
+                RecursionDesired = isRecursionDesired,
+                RecursionAvailable = isRecursionAvailable,
+                ResponseCode = responseCode
+            };
+        }
+
+        private bool GetBit(byte b, int bitNumber)
+        {
+            return (b & (1 << 8 - bitNumber)) != 0;
         }
     }
 }

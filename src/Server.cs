@@ -23,23 +23,22 @@ while (true)
     IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
     byte[] receivedData = udpClient.Receive(ref sourceEndPoint);
     string receivedString = Encoding.ASCII.GetString(receivedData);
-
     Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
-
+    var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
     // Create an empty response
-    var dnsHeader = new DnsHeaderBuilder().SetID(1234)
-        .SetQueryResponseIndicator(true)
-        .SetOpCode(0)
-        .SetAuthoritativeAnswer(false)
-        .SetTruncation(false)
-        .SetRecursionDesired(false)
-        .SetRecursionAvailable(false)
-        .SetReserved(0)
-        .SetResponseCode(0)
-        .SetQuestionCount(1)
-        .SetAnswerRecordCount(1)
-        .SetAuthorityRecordCount(0)
-        .SetAdditionalRecordCount(0)
+    var dnsHeader = new DnsHeaderBuilder().SetID(dnsHeaderQuery.ID)
+        .SetQueryResponseIndicator(dnsHeaderQuery.QueryResponseIndicator)
+        .SetOpCode(dnsHeaderQuery.OpCode)
+        .SetAuthoritativeAnswer(dnsHeaderQuery.AuthoritativeAnswer)
+        .SetTruncation(dnsHeaderQuery.Truncation)
+        .SetRecursionDesired(dnsHeaderQuery.RecursionDesired)
+        .SetRecursionAvailable(dnsHeaderQuery.RecursionAvailable)
+        .SetReserved(dnsHeaderQuery.Reserved)
+        .SetResponseCode(dnsHeaderQuery.ResponseCode)
+        .SetQuestionCount(dnsHeaderQuery.QuestionCount)
+        .SetAnswerRecordCount(dnsHeaderQuery.AnswerRecordCount)
+        .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
+        .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
         .Build();
     var labels = new List<string> { "codecrafters", "io" };
     var question = new DNSQuestion(labels, DNSType.A, DNSClass.IN);
