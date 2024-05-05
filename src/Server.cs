@@ -56,6 +56,7 @@ while (true)
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
         response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
+        await udpClient.SendAsync(response, resolverResponse.RemoteEndPoint);
     }
     else
     {
@@ -100,11 +101,11 @@ while (true)
 
         var message = new DNSMessage(dnsHeader, questions, answers);
         response = message.ToByteArray();
+        await udpClient.SendAsync(response, sourceEndPoint);
 
     }
 
 
     // Send response
-    udpClient.Send(response, response.Length, sourceEndPoint);
 }
 
