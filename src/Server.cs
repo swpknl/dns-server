@@ -25,7 +25,6 @@ if (args.Length == 2 && args[0] == "--resolver")
     var resolverAddress = args[1];
     resolverEndPoint = IPEndPoint.Parse(resolverAddress);
     resolverUdpClient = new UdpClient(resolverEndPoint.Address.ToString(), resolverEndPoint.Port);
-    resolverUdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 }
 
 while (true)
@@ -34,7 +33,6 @@ while (true)
     {
         Console.WriteLine("In custom");
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
-        IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 5000);
         byte[] receivedData = (udpClient.Receive(ref sourceEndPoint));
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
@@ -76,7 +74,7 @@ while (true)
         {
             Console.WriteLine("Question: " + string.Concat(dnsQuestion.Labels));
             var dnsMessage = new DNSMessage(dnsHeader, new List<DNSQuestion>() { dnsQuestion }, null);
-            resolverUdpClient.Close();
+            IPEndPoint resolverEndpoint = new IPEndPoint(IPAddress.Any, 50004);
             resolverUdpClient.Send(dnsMessage.ToByteArray(), resolverEndpoint);
             var answerBytes = resolverUdpClient.Receive(ref resolverEndpoint);
             Console.WriteLine("Answer: " + Encoding.UTF8.GetString(answerBytes));
