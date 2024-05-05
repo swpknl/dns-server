@@ -29,11 +29,12 @@ namespace codecrafters_dns_server.src.Models
                 bytes.AddRange(Encoding.ASCII.GetBytes(label));
             }
 
-            bytes.Add(0);
-            bytes.Add((byte)((short)Type >> 8));
-            bytes.Add((byte)((short)Type & 0xFF));
-            bytes.Add((byte)((short)Class >> 8));
-            bytes.Add((byte)((short)Class & 0xFF));
+            //bytes.Add(0);
+            //bytes.Add((byte)((short)Type >> 8));
+            //bytes.Add((byte)((short)Type & 0xFF));
+            //bytes.Add((byte)((short)Class >> 8));
+            //bytes.Add((byte)((short)Class & 0xFF));
+            bytes.AddRange(Encoding.UTF8.GetBytes("\x00"));
             return bytes.ToArray();
         }
     }
