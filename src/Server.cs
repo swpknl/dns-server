@@ -36,12 +36,13 @@ while (true)
         .SetRecursionAvailable(false)
         .SetReserved(0)
         .SetResponseCode(0)
-        .SetQuestionCount(0)
+        .SetQuestionCount(1)
         .SetAnswerRecordCount(0)
         .SetAuthorityRecordCount(0)
         .SetAdditionalRecordCount(0)
         .Build();
-    var message = new DNSMessage(dnsHeader);
+    var question = new DNSQuestion(new List<string>{"codecrafters", "io" }, DNSType.A, DNSClass.IN);
+    var message = new DNSMessage(dnsHeader,question);
     byte[] response = message.ToByteArray();
 
     // Send response
