@@ -17,17 +17,15 @@ if (args.Length > 0 && args[0] == "--resolver")
     var resolverIpAddress = IPEndPoint.Parse(resolverAddress);
     resolverUdpClient = new UdpClient(resolverIpAddress.Address.ToString(), resolverIpAddress.Port);
 }
-
+IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+int port = 2053;
+IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
+// Create UDP socket
+UdpClient udpClient = new UdpClient(udpEndPoint);
 while (true)
 {
     if (resolverUdpClient is not null && args.Length > 0)
     {
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-        int port = 2053;
-        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
-        byte[] response = null;
-        // Create UDP socket
-        UdpClient udpClient = new UdpClient(udpEndPoint);
         // Receive data
         IPEndPoint sourceEndPoint = new IPEndPoint(IPAddress.Any, 0);
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
@@ -54,18 +52,14 @@ while (true)
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var resolverQuery = resolverUdpClient.Send(receivedData);
         var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        response = resolverResponse.Buffer;
+        var response = resolverResponse.Buffer;
         Console.WriteLine("Response : " + Encoding.UTF8.GetString(response));
         await udpClient.SendAsync(response);
     }
     else
     {
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-        int port = 2053;
-        IPEndPoint udpEndPoint = new IPEndPoint(ipAddress, port);
         byte[] response = null;
         // Create UDP socket
-        UdpClient udpClient = new UdpClient(udpEndPoint);
         byte[] receivedData = (await udpClient.ReceiveAsync()).Buffer;
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} : {receivedString}");
