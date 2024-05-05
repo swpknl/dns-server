@@ -61,25 +61,26 @@ while (true)
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
-        var message = new DNSMessage(dnsHeader, new List<DNSQuestion>(), new List<DNSAnswer>());
         for (int i = 0; i < dnsHeader.QuestionCount; i++)
         {
             var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
             offset += 12;
             Console.WriteLine(string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-            message.questions = new List<DNSQuestion>() { question};
-            foreach (var splitIntoSingularQuestion in message.SplitIntoSingularQuestions())
-            {
-                Console.WriteLine("split message");
-                await resolverUdpClient.SendAsync(splitIntoSingularQuestion.ToByteArray());
-                var resolverResponse = await resolverUdpClient.ReceiveAsync();
-                var rsp =
-                    DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
-                Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
-                questions.AddRange(rsp.questions);
-                answers.AddRange(rsp.answers);
-            }
+            questions.Add(question);
+        }
+
+        var message = new DNSMessage(dnsHeader, questions, new List<DNSAnswer>());
+        foreach (var splitIntoSingularQuestion in message.SplitIntoSingularQuestions())
+        {
+            Console.WriteLine("split message");
+            await resolverUdpClient.SendAsync(splitIntoSingularQuestion.ToByteArray());
+            var resolverResponse = await resolverUdpClient.ReceiveAsync();
+            var rsp =
+                DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
+            Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
+            //questions.AddRange(rsp.questions);
+            answers.AddRange(rsp.answers);
         }
 
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
