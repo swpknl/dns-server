@@ -78,10 +78,8 @@ while (true)
             await resolverUdpClient.SendAsync(dnsMessage.ToByteArray());
             var answerBytes = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine("Answer: " + Encoding.UTF8.GetString(answerBytes.Buffer));
+            await udpClient.SendAsync(answerBytes.Buffer, sourceEndPoint);
         }
-        
-
-        await udpClient.SendAsync(response, sourceEndPoint);
         
         continue;
     }
