@@ -58,28 +58,26 @@ namespace codecrafters_dns_server.src.Models
 
         public static DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
-            Console.WriteLine("Original " + Encoding.UTF8.GetString(buffer));
-            var header = new DNSHeader().FromBytes(buffer.ToArray());
+            var dnsHeader = new DNSHeader().FromBytes(buffer.ToArray());
+            var count = 12;
             var questions = new List<DNSQuestion>();
-            var offset = 12;
-            for (int i = 0; i < header.QuestionCount; i++)
+            for (int i = 0; i < dnsHeader.QuestionCount; i++)
             {
+                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out int offset);
+                count += offset;
                 buffer = buffer[offset..];
-                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out offset);
-                Console.WriteLine(string.Concat(q.Labels));
                 questions.Add(q);
             }
-
-            Console.WriteLine("Offset: " + offset);
-            Console.WriteLine("Buffer: " + Encoding.UTF8.GetString(buffer));
             var answers = new List<DNSAnswer>();
-            Console.WriteLine(header.AnswerRecordCount);
-            for (int i = 0; i < header.AnswerRecordCount; i++)
+            for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer, out offset);
+                var q = DNSAnswer.Read(buffer.ToArray(), out int offset);
+                count += offset;
+                buffer = buffer[offset..];
                 answers.Add(q);
             }
-            var msg = new DNSMessage(header, questions, answers);
+
+            var msg = new DNSMessage(dnsHeader, questions, answers);
             return msg;
         }
     }

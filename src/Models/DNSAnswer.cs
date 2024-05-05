@@ -36,8 +36,7 @@ namespace codecrafters_dns_server.src.Models
         {
             var count = 0;
             List<string> names = ReadLabels(buffer, out offset);
-            Console.WriteLine(string.Concat(names));
-            count = offset;
+            count += offset;
             var type = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
             var @class = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
@@ -46,7 +45,7 @@ namespace codecrafters_dns_server.src.Models
             count += 4;
             var dataLength = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
-            var data = buffer[^count..].ToArray().ToList();
+            var data = new Memory<byte>(buffer.Slice(count, dataLength).ToArray());
             count += dataLength;
             var record = new DNSAnswer()
             {
@@ -61,30 +60,17 @@ namespace codecrafters_dns_server.src.Models
 
         private static List<string> ReadLabels(ReadOnlySpan<byte> buffer, out int offset)
         {
-            offset = 0;
             var labels = new List<string>();
-            Console.Write("Read Labels " + Encoding.UTF8.GetString(buffer) + "\t");
-            while (buffer[offset] != 0)
+            offset = 0;
+            // read until null termination
+            while (buffer[0] != 0)
             {
-                try
-                {
-                    var length = buffer[offset];
-                Console.WriteLine("LEngth" + length);
-                offset++;
-                var value = Encoding.ASCII.GetString(buffer[offset..(length)]);
-                Console.WriteLine(value);
-                labels.Add(value);
-                offset += length;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-                
+                var strLen = buffer[0];
+                var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
+                labels.Add(str);
+                buffer = buffer[(1 + strLen)..];
+                offset += 1 + strLen;
             }
-
-            offset++;
-            Console.WriteLine("Parsed Answer labels " + string.Concat(labels));
             return labels;
         }
 
