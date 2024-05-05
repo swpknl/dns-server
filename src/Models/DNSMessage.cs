@@ -69,7 +69,7 @@ namespace codecrafters_dns_server.src.Models
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < header.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer[offset..]);
+                var q = DNSAnswer.Read(buffer);
                 answers.Add(q);
             }
             var msg = new DNSMessage(header, questions, answers);
