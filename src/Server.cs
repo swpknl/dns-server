@@ -25,6 +25,7 @@ if (args.Length == 2 && args[0] == "--resolver")
     var resolverAddress = args[1];
     resolverEndPoint = IPEndPoint.Parse(resolverAddress);
     resolverUdpClient = new UdpClient(resolverEndPoint.Address.ToString(), resolverEndPoint.Port);
+    resolverUdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 }
 
 while (true)
