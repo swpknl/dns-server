@@ -37,14 +37,39 @@ while (true)
         .SetReserved(dnsHeaderQuery.Reserved)
         .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
         .SetQuestionCount(dnsHeaderQuery.QuestionCount)
-        .SetAnswerRecordCount(1)
+        .SetAnswerRecordCount(dnsHeaderQuery.QuestionCount)
         .SetAuthorityRecordCount(dnsHeaderQuery.AuthorityRecordCount)
         .SetAdditionalRecordCount(dnsHeaderQuery.AdditionalRecordCount)
         .Build();
-    var questionQuery = new DNSQuestion().FromBytes(receivedData);
-    var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-    var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
-    var message = new DNSMessage(dnsHeader,question, answer);
+    List<DNSQuestion> questions = new List<DNSQuestion>();
+    List<DNSAnswer> answers = new List<DNSAnswer>();
+    var offset = 12;
+    for (int i = 0; i < dnsHeader.QuestionCount; i++)
+    {
+        try
+        {
+            var questionQuery = new DNSQuestion().FromBytes(receivedData[offset..], out offset);
+            offset += 12;
+            Console.WriteLine(string.Concat(questionQuery.Labels));
+            var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
+            questions.Add(question);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception: " + e);
+            throw;
+        }
+        
+    }
+
+    foreach (var question in questions)     
+    {
+        var answer = new DNSAnswer(question.Labels, DNSType.A, DNSClass.IN, 60, 4, [8, 8, 8, 8]);
+        Console.WriteLine(string.Concat(answer.Labels));
+        answers.Add(answer);
+    }
+    
+    var message = new DNSMessage(dnsHeader,questions, answers);
     byte[] response = message.ToByteArray();
 
     // Send response
