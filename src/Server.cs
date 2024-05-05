@@ -79,7 +79,13 @@ while (true)
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
                 DNSMessage.Read(resolverResponse.Buffer);
-            Console.WriteLine("Asnwers: " + string.Concat(rsp.answers.SelectMany(x => x.Data)));
+            foreach (var dnsAnswer in answers)
+            {
+                Console.WriteLine("Labels + " + string.Concat(dnsAnswer.Labels));
+                Console.WriteLine("Data + " + string.Concat(dnsAnswer.Data));
+            }
+
+            ;
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
         }
