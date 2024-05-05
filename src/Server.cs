@@ -68,16 +68,18 @@ while (true)
             offset += 12;
             Console.WriteLine(string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
-            questions.Add(question);
-            var splitMessage = message.ToByteArray();
-            Console.WriteLine("split message");
-            await resolverUdpClient.SendAsync(splitMessage);
-            var resolverResponse = await resolverUdpClient.ReceiveAsync();
-            var rsp =
-                DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
-            Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
-            questions.AddRange(rsp.questions);
-            answers.AddRange(rsp.answers);
+            message.questions = new List<DNSQuestion>() { question};
+            foreach (var splitIntoSingularQuestion in message.SplitIntoSingularQuestions())
+            {
+                Console.WriteLine("split message");
+                await resolverUdpClient.SendAsync(splitIntoSingularQuestion.ToByteArray());
+                var resolverResponse = await resolverUdpClient.ReceiveAsync();
+                var rsp =
+                    DNSMessage.Read(resolverResponse.Buffer, resolverResponse.Buffer);
+                Console.WriteLine("Asnwers: " + rsp.answers.SelectMany(x => x.Data));
+                questions.AddRange(rsp.questions);
+                answers.AddRange(rsp.answers);
+            }
         }
 
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
