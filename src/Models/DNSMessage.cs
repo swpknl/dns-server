@@ -64,7 +64,7 @@ namespace codecrafters_dns_server.src.Models
             var questions = new List<DNSQuestion>();
             for (int i = 0; i < dnsHeader.QuestionCount; i++)
             {
-                var q = new DNSQuestion().FromBytes(buffer.ToArray(), out offset);
+                var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
                 count += offset;
                 buffer = buffer[offset..];
                 questions.Add(q);
