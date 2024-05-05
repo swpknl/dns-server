@@ -21,6 +21,7 @@ IPEndPoint resolverEndPoint = null;
 // Receive data
 if (args.Length == 2 && args[0] == "--resolver")
 {
+    Console.WriteLine("Resolver is passed");
     var resolverAddress = args[1];
     resolverEndPoint = IPEndPoint.Parse(resolverAddress);
     resolverUdpClient = new UdpClient(resolverEndPoint.Address.ToString(), resolverEndPoint.Port);
