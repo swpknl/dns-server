@@ -58,6 +58,7 @@ namespace codecrafters_dns_server.src.Models
 
         public static DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
+            Console.WriteLine("Buffer: " + buffer.Length);
             var dnsHeader = new DNSHeader().FromBytes(buffer.ToArray());
             var count = 12;
             int offset = 12;
@@ -71,7 +72,7 @@ namespace codecrafters_dns_server.src.Models
                 offset += 4;
             }
 
-            offset++;
+
             Console.WriteLine("Buffer: " + buffer.Length);
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
