@@ -39,6 +39,7 @@ while (true)
         string receivedString = Encoding.ASCII.GetString(receivedData);
         Console.WriteLine($"Received {receivedData.Length} bytes from {sourceEndPoint}: {receivedString}");
         var dnsHeaderQuery = new DNSHeader().FromBytes(receivedData);
+        Console.WriteLine($"QC: {dnsHeaderQuery.QuestionCount}");
         Console.WriteLine(dnsHeaderQuery.ResponseCode);
         // Create an empty response
         var dnsHeader = new DnsHeaderBuilder().SetID(dnsHeaderQuery.ID)
@@ -55,10 +56,7 @@ while (true)
             .SetAuthorityRecordCount(0)
             .SetAdditionalRecordCount(0)
             .Build();
-        //var resolverQuery = resolverUdpClient.Send(receivedData);
-        //var resolverResponse = await resolverUdpClient.ReceiveAsync();
-        //response = resolverResponse.Buffer;
-        //Console.WriteLine("Response : " + Encoding.UTF8.GetString(resolverResponse.Buffer));
+        
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
