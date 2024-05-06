@@ -86,7 +86,6 @@ while (true)
             Console.WriteLine("Received resonse: " + rsp.ToString());
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
-            counter++;
         }
 
         Console.WriteLine("Answers present" + answers.Count);
