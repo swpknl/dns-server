@@ -60,7 +60,7 @@ while (true)
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         var offset = 12;
-        Console.WriteLine(dnsHeaderQuery.QuestionCount);
+        Console.WriteLine("Question count input: " + dnsHeaderQuery.QuestionCount);
         for (int i = 0; i < dnsHeaderQuery.QuestionCount; i++)
         {
             var array = receivedData.ToArray();
