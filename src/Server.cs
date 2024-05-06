@@ -64,8 +64,7 @@ while (true)
         var offset = 12;
         for (int i = 0; i < dnsHeader.QuestionCount; i++)
         {
-            var stream = new MemoryStream(receivedData);
-            var array = stream.ToArray();
+            var array = receivedData.ToArray();
             var questionQuery = new DNSQuestion().FromBytes(array[offset..], out offset);
             offset += 12;
             Console.WriteLine(string.Concat(questionQuery.Labels));
