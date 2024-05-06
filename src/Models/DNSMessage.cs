@@ -83,6 +83,7 @@ namespace codecrafters_dns_server.src.Models
                 answers.Add(q);
             }
 
+            Console.WriteLine("Answers count: " + answers.Count);
             var msg = new DNSMessage(dnsHeader, questions, answers);
             return msg;
         }
