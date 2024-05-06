@@ -90,7 +90,7 @@ namespace codecrafters_dns_server.src.Models
         public override string ToString()
         {
             return
-                $"Question: {string.Concat(questions.SelectMany(x => x.Labels))} Answer: {string.Concat(answers.SelectMany(x => x.Labels))}";
+                $"Question: {string.Concat(questions.Select(x => x.Labels))} Answer: {string.Concat(answers.Select(x => x.Labels))}";
         }
     }
 }
