@@ -79,7 +79,7 @@ while (true)
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
                 DNSMessage.Read(resolverResponse.Buffer);
-            Console.WriteLine("Received resonse: " + string.Concat(rsp.answers.SelectMany(x => x.Labels)));
+            Console.WriteLine("Received resonse: " + rsp.ToString());
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
         }

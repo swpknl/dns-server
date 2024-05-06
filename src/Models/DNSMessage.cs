@@ -86,5 +86,11 @@ namespace codecrafters_dns_server.src.Models
             var msg = new DNSMessage(dnsHeader, questions, answers);
             return msg;
         }
+
+        public override string ToString()
+        {
+            return
+                $"Question: {string.Concat(questions.SelectMany(x => x.Labels))} Answer: {string.Concat(answers.SelectMany(x => x.Labels))}";
+        }
     }
 }
