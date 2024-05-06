@@ -73,7 +73,7 @@ namespace codecrafters_dns_server.src.Models
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer.ToArray(), out offset);
+                var q = DNSAnswer.Read(buffer.ToArray()[offset..], out offset);
                 count += offset;
                 buffer = buffer[offset..];
                 answers.Add(q);
