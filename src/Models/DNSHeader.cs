@@ -116,7 +116,7 @@ namespace codecrafters_dns_server.src.Models
             {
                 ID = ID,
                 QuestionCount = count,
-                AnswerRecordCount = count,
+                AnswerRecordCount = 0,
                 AuthorityRecordCount = AuthorityRecordCount,
                 AdditionalRecordCount = AdditionalRecordCount
             };
