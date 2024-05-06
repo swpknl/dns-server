@@ -72,7 +72,7 @@ namespace codecrafters_dns_server.src.Models
             }
 
             offset++;
-            Console.WriteLine(buffer.Length);
+            Console.WriteLine("Buffer: " + buffer.Length);
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
