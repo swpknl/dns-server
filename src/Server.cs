@@ -76,7 +76,7 @@ while (true)
         {
             Console.WriteLine("split message");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
-            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(counter++), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
+            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(1), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
@@ -84,12 +84,13 @@ while (true)
             Console.WriteLine("Received resonse: " + rsp.ToString());
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
+            counter++;
         }
 
         Console.WriteLine("Answers present" + answers.Count);
 
-        dnsHeader.AnswerRecordCount = (ushort)answers.Count;
-        dnsHeader.QuestionCount = (ushort)questions.Count;
+        dnsHeader.AnswerRecordCount = (ushort)counter;
+        dnsHeader.QuestionCount = (ushort)counter;
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
         await udpClient.SendAsync(dnsMessage.ToByteArray(), sourceEndPoint);
 
