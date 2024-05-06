@@ -32,10 +32,11 @@ namespace codecrafters_dns_server.src.Models
             
         }
 
-        public static DNSAnswer Read(ReadOnlySpan<byte> buffer, out int offset)
+        public static DNSAnswer Read(ReadOnlySpan<byte> buffer, out int offset, List<string> labels)
         {
             var count = 0;
-            List<string> names = ReadLabels(buffer, out offset);
+            offset = 0;
+            List<string> names = labels;
             count += offset;
             var type = BinaryPrimitives.ReadUInt16BigEndian(buffer[count..]);
             count += 2;
