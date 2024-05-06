@@ -72,6 +72,7 @@ namespace codecrafters_dns_server.src.Models
 
             Console.WriteLine("Buffer: " + buffer.Length);
             var answers = new List<DNSAnswer>();
+            Console.WriteLine("DNS Header ARC: " + dnsHeader.AnswerRecordCount);
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
                 var arr = buffer.ToArray()[count..];
