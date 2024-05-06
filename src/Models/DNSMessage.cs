@@ -66,7 +66,7 @@ namespace codecrafters_dns_server.src.Models
             for (int i = 0; i < dnsHeader.QuestionCount; i++)
             {
                 var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
-                count += offset + 4;
+                count += offset;
                 buffer = buffer[offset..];
                 questions.Add(q);
             }
@@ -75,7 +75,9 @@ namespace codecrafters_dns_server.src.Models
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
-                var q = DNSAnswer.Read(buffer.ToArray()[count..], out offset);
+                var arr = buffer.ToArray()[count..];
+                Console.WriteLine(Encoding.UTF8.GetString(arr));
+                var q = DNSAnswer.Read(arr, out offset);
                 count += offset;
                 buffer = buffer[count..];
                 answers.Add(q);
