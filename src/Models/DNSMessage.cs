@@ -77,7 +77,7 @@ namespace codecrafters_dns_server.src.Models
             {
                 var q = DNSAnswer.Read(buffer.ToArray()[count..], out offset);
                 count += offset;
-                buffer = buffer[offset..];
+                buffer = buffer[count..];
                 answers.Add(q);
             }
 
