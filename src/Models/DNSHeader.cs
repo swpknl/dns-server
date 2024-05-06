@@ -110,13 +110,13 @@ namespace codecrafters_dns_server.src.Models
             return (b & (1 << 8 - bitNumber)) != 0;
         }
 
-        public DNSHeader Copy()
+        public DNSHeader Copy(ushort count)
         {
             return new DNSHeader
             {
                 ID = ID,
-                QuestionCount = 1,
-                AnswerRecordCount = 0,
+                QuestionCount = count,
+                AnswerRecordCount = count,
                 AuthorityRecordCount = AuthorityRecordCount,
                 AdditionalRecordCount = AdditionalRecordCount
             };
