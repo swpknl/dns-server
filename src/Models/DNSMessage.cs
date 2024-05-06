@@ -70,6 +70,8 @@ namespace codecrafters_dns_server.src.Models
                 questions.Add(q);
                 offset += 4;
             }
+
+            offset++;
             var answers = new List<DNSAnswer>();
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
