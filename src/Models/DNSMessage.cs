@@ -69,7 +69,7 @@ namespace codecrafters_dns_server.src.Models
                 count += offset;
                 buffer = buffer[offset..];
                 questions.Add(q);
-                offset += 4;
+                offset += 2;
             }
 
             Console.WriteLine("Buffer: " + buffer.Length);
