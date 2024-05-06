@@ -62,12 +62,10 @@ namespace codecrafters_dns_server.src.Models
 
         public DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
-            Console.WriteLine("Buffer start: " + buffer.Length);
             var dnsHeader = new DNSHeader().FromBytes(buffer.ToArray());
             var count = 12;
             int offset = 12;
             var questions = new List<DNSQuestion>();
-            Console.WriteLine("DNS HEader QC: " + dnsHeader.QuestionCount);
             for (int i = 0; i < dnsHeader.QuestionCount; i++)
             {
                 var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
@@ -76,20 +74,16 @@ namespace codecrafters_dns_server.src.Models
                 questions.Add(q);
             }
 
-            Console.WriteLine("Buffer after question: " + buffer.Length);
             var answers = new List<DNSAnswer>();
-            Console.WriteLine("DNS Header ARC: " + dnsHeader.AnswerRecordCount);
             for (int i = 0; i < dnsHeader.AnswerRecordCount; i++)
             {
                 var arr = buffer.ToArray()[count..];
-                Console.WriteLine(Encoding.UTF8.GetString(arr));
                 var q = DNSAnswer.Read(arr, out offset, questions[i].Labels);
                 count += offset;
                 buffer = buffer[count..];
                 answers.Add(q);
             }
 
-            Console.WriteLine("Answers count: " + answers.Count);
             var msg = new DNSMessage(dnsHeader, questions, answers);
             return msg;
         }

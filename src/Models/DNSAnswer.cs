@@ -23,13 +23,13 @@ namespace codecrafters_dns_server.src.Models
             this.Type = type;
             this.Class = dnsClass;
             this.TTL = ttl;
-            this.Length = length;  
+            this.Length = length;
             this.Data = data;
         }
 
         public DNSAnswer()
         {
-            
+
         }
 
         public static DNSAnswer Read(ReadOnlySpan<byte> buffer, out int offset, List<string> labels)
@@ -63,26 +63,16 @@ namespace codecrafters_dns_server.src.Models
         {
             var labels = new List<string>();
             offset = 0;
-            try
+            // read until null termination
+            while (buffer[0] != 0)
             {
-                // read until null termination
-                while (buffer[0] != 0)
-                {
-                    var strLen = buffer[0];
-                    Console.WriteLine("String length: " + strLen);
-                    var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
-                    Console.WriteLine("Value: " + str);
-                    labels.Add(str);
-                    buffer = buffer[(1 + strLen)..];
-                    offset += 1 + strLen;
-                }
+                var strLen = buffer[0];
+                var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
+                labels.Add(str);
+                buffer = buffer[(1 + strLen)..];
+                offset += 1 + strLen;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            
+
             return labels;
         }
 
