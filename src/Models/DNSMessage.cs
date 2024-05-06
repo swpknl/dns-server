@@ -72,6 +72,7 @@ namespace codecrafters_dns_server.src.Models
             {
                 var q = new DNSQuestion().FromBytes(buffer.ToArray()[offset..], out offset);
                 count += offset + 4;
+                buffer = buffer[offset..];
                 questions.Add(q);
             }
 
@@ -84,6 +85,7 @@ namespace codecrafters_dns_server.src.Models
                 Console.WriteLine(Encoding.UTF8.GetString(arr));
                 var q = DNSAnswer.Read(arr, out offset, questions[i].Labels);
                 count += offset;
+                buffer = buffer[count..];
                 answers.Add(q);
             }
 
