@@ -65,7 +65,7 @@ while (true)
         {
             offset += 12;
             var array = receivedData.ToArray();
-            Console.WriteLine("Array length after copying: " + array.Length);
+            Console.WriteLine("Array length after copying: " + array.Length + " Offset: " + offset);
             var questionQuery = new DNSQuestion().FromBytes(array[offset..], out offset); 
             Console.WriteLine(string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
