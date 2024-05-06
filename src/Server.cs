@@ -78,7 +78,12 @@ while (true)
         {
             Console.WriteLine($"Question {counter} {string.Concat(question.Labels)}");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
-            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(1), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
+            var header = new DnsHeaderBuilder()
+                .SetID(dnsHeader.ID)
+                .SetAnswerRecordCount(0)
+                .SetQuestionCount(1)
+                .Build();
+            resolverUdpClient.Send(new DNSMessage(header, new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
