@@ -51,7 +51,7 @@ while (true)
             .SetReserved(dnsHeaderQuery.Reserved)
             .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
             .SetQuestionCount(dnsHeaderQuery.QuestionCount)
-            .SetAnswerRecordCount(dnsHeaderQuery.QuestionCount)
+            .SetAnswerRecordCount(dnsHeaderQuery.AnswerRecordCount)
             .SetAuthorityRecordCount(0)
             .SetAdditionalRecordCount(0)
             .Build();
@@ -70,6 +70,8 @@ while (true)
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
             questions.Add(question);
         }
+
+        Console.WriteLine("Questions count: " + questions.Count);
 
         ushort counter = 0;
         foreach(var question in questions)
