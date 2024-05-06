@@ -59,26 +59,19 @@ while (true)
         
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
-        Console.WriteLine(dnsHeaderQuery.QuestionCount);
         var offset = 12;
+        Console.WriteLine(dnsHeaderQuery.QuestionCount);
         for (int i = 0; i < dnsHeaderQuery.QuestionCount; i++)
         {
             var array = receivedData.ToArray();
             Console.WriteLine("Array length after copying: " + array.Length);
             var questionQuery = new DNSQuestion().FromBytes(array[offset..], out offset);
+            offset += 12;
             Console.WriteLine(string.Concat(questionQuery.Labels));
             var question = new DNSQuestion(questionQuery.Labels, DNSType.A, DNSClass.IN);
             questions.Add(question);
-        }
-
-        Console.WriteLine("Questions count: " + string.Concat(questions.SelectMany(x => x.Labels)));
-
-        ushort counter = 1;
-        foreach(var question in questions)
-        {
-            Console.WriteLine($"Question {counter} {string.Concat(question.Labels)}");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
-            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(1), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
+            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(1), new List<DNSQuestion>() { question }, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
@@ -88,10 +81,12 @@ while (true)
             answers.AddRange(rsp.answers);
         }
 
+        Console.WriteLine("Questions count: " + string.Concat(questions.SelectMany(x => x.Labels)));
+
         Console.WriteLine("Answers present" + answers.Count);
 
-        dnsHeader.AnswerRecordCount = (ushort)counter;
-        dnsHeader.QuestionCount = (ushort)counter;
+        dnsHeader.AnswerRecordCount = (ushort)questions.Count;
+        dnsHeader.QuestionCount = (ushort)answers.Count;
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
         await udpClient.SendAsync(dnsMessage.ToByteArray(), sourceEndPoint);
 
