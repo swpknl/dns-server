@@ -80,20 +80,13 @@ while (true)
             Console.WriteLine("Server: " + Encoding.UTF8.GetString(resolverResponse.Buffer));
             var rsp =
                 DNSMessage.Read(resolverResponse.Buffer);
-            foreach (var dnsAnswer in answers)
-            {
-                Console.WriteLine("Labels + " + string.Concat(dnsAnswer.Labels));
-                Console.WriteLine("Data + " + string.Concat(dnsAnswer.Data));
-            }
-
-            ;
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
         }
 
+        dnsHeader.AnswerRecordCount = (ushort)answers.Count;
+        dnsHeader.QuestionCount = (ushort)questions.Count;
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
-        dnsMessage.header.AnswerRecordCount = (ushort)answers.Count;
-        dnsMessage.header.QuestionCount = (ushort)questions.Count;
         await udpClient.SendAsync(dnsMessage.ToByteArray(), sourceEndPoint);
 
         continue;
