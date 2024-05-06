@@ -70,6 +70,7 @@ namespace codecrafters_dns_server.src.Models
                     var strLen = buffer[0];
                     Console.WriteLine("String length: " + strLen);
                     var str = Encoding.UTF8.GetString(buffer.Slice(1, strLen));
+                    Console.WriteLine("Value: " + str);
                     labels.Add(str);
                     buffer = buffer[(1 + strLen)..];
                     offset += 1 + strLen;
