@@ -73,12 +73,12 @@ while (true)
 
         Console.WriteLine("Questions count: " + string.Concat(questions.SelectMany(x => x.Labels)));
 
-        ushort counter = 0;
+        ushort counter = 1;
         foreach(var question in questions)
         {
-            Console.WriteLine("split message");
+            Console.WriteLine($"Question {counter} {string.Concat(question.Labels)}");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
-            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(1), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
+            resolverUdpClient.Send(new DNSMessage(dnsHeader.Copy(counter++), new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
             Console.WriteLine(resolverResponse.RemoteEndPoint);
             var rsp =
@@ -86,7 +86,6 @@ while (true)
             Console.WriteLine("Received resonse: " + rsp.ToString());
             //questions.AddRange(rsp.questions);
             answers.AddRange(rsp.answers);
-            counter++;
         }
 
         Console.WriteLine("Answers present" + answers.Count);
