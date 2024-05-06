@@ -20,6 +20,11 @@ namespace codecrafters_dns_server.src.Models
             this.answers = dnsAnswer;
         }
 
+        public DNSMessage()
+        {
+            
+        }
+
         public byte[] ToByteArray()
         {
             var bytes = new List<byte>();
@@ -55,7 +60,7 @@ namespace codecrafters_dns_server.src.Models
             }
         }
 
-        public static DNSMessage Read(ReadOnlySpan<byte> buffer)
+        public DNSMessage Read(ReadOnlySpan<byte> buffer)
         {
             Console.WriteLine("Buffer start: " + buffer.Length);
             var dnsHeader = new DNSHeader().FromBytes(buffer.ToArray());

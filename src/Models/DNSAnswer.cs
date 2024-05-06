@@ -59,7 +59,7 @@ namespace codecrafters_dns_server.src.Models
             return record;
         }
 
-        private static List<string> ReadLabels(ReadOnlySpan<byte> buffer, out int offset)
+        private List<string> ReadLabels(ReadOnlySpan<byte> buffer, out int offset)
         {
             var labels = new List<string>();
             offset = 0;
