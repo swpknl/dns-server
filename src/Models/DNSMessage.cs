@@ -69,7 +69,6 @@ namespace codecrafters_dns_server.src.Models
                 count += offset + 4;
                 buffer = buffer[offset..];
                 questions.Add(q);
-                dnsHeader.QuestionCount++;
             }
 
             Console.WriteLine("Buffer: " + buffer.Length);
@@ -82,7 +81,6 @@ namespace codecrafters_dns_server.src.Models
                 count += offset;
                 buffer = buffer[count..];
                 answers.Add(q);
-                dnsHeader.AnswerRecordCount++;
             }
 
             var msg = new DNSMessage(dnsHeader, questions, answers);

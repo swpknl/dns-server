@@ -92,6 +92,8 @@ while (true)
         }
 
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
+        dnsMessage.header.AnswerRecordCount = (ushort)answers.Count;
+        dnsMessage.header.QuestionCount = (ushort)questions.Count;
         await udpClient.SendAsync(dnsMessage.ToByteArray(), sourceEndPoint);
 
         continue;
