@@ -84,6 +84,8 @@ while (true)
             answers.AddRange(rsp.answers);
         }
 
+        Console.WriteLine("Answers present" + answers.Count);
+
         dnsHeader.AnswerRecordCount = (ushort)answers.Count;
         dnsHeader.QuestionCount = (ushort)questions.Count;
         var dnsMessage = new DNSMessage(dnsHeader, questions, answers);
