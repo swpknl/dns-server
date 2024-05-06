@@ -45,7 +45,7 @@ namespace codecrafters_dns_server.src.Models
         {
             foreach (var question in questions)
             {
-                var header = this.header.Copy();
+                var header = this.header.Copy(1);
                 header.QuestionCount = 0;
                 header.AnswerRecordCount = 0;
                 header.AdditionalRecordCount = 0;
