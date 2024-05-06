@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -113,11 +112,14 @@ namespace codecrafters_dns_server.src.Models
 
         public DNSHeader Copy()
         {
-            var json = JsonSerializer.Serialize(this);
-            var deserialize = JsonSerializer.Deserialize<DNSHeader>(json);
-            deserialize.QuestionCount = 1;
-            deserialize.AnswerRecordCount = 1;
-            return deserialize;
+            return new DNSHeader
+            {
+                ID = ID,
+                QuestionCount = 1,
+                AnswerRecordCount = 0,
+                AuthorityRecordCount = AuthorityRecordCount,
+                AdditionalRecordCount = AdditionalRecordCount
+            };
         }
     }
 }
