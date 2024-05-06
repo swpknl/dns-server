@@ -50,8 +50,7 @@ namespace codecrafters_dns_server.src.Models
                 header.AnswerRecordCount = 0;
                 header.AdditionalRecordCount = 0;
                 header.AuthorityRecordCount = 0;
-                questions.Add(question);
-                var msg = new DNSMessage(this.header, questions, null);
+                var msg = new DNSMessage(this.header, new List<DNSQuestion>(){question}, new List<DNSAnswer>());
                 yield return msg;
             }
         }
