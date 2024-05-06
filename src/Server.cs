@@ -79,9 +79,18 @@ while (true)
             Console.WriteLine($"Question {counter} {string.Concat(question.Labels)}");
             var ip = new IPEndPoint(IPAddress.Any, 41232);
             var header = new DnsHeaderBuilder()
-                .SetID(dnsHeader.ID)
-                .SetAnswerRecordCount(0)
-                .SetQuestionCount(1)
+                .SetQueryResponseIndicator(dnsHeaderQuery.QueryResponseIndicator)
+                .SetOpCode(dnsHeaderQuery.OpCode)
+                .SetAuthoritativeAnswer(dnsHeaderQuery.AuthoritativeAnswer)
+                .SetTruncation(dnsHeaderQuery.Truncation)
+                .SetRecursionDesired(dnsHeaderQuery.RecursionDesired)
+                .SetRecursionAvailable(dnsHeaderQuery.RecursionAvailable)
+                .SetReserved(dnsHeaderQuery.Reserved)
+                .SetResponseCode(dnsHeaderQuery.OpCode == 0 ? (byte)0 : (byte)4)
+                .SetQuestionCount(dnsHeaderQuery.QuestionCount)
+                .SetAnswerRecordCount(dnsHeaderQuery.AnswerRecordCount)
+                .SetAuthorityRecordCount(0)
+                .SetAdditionalRecordCount(0)
                 .Build();
             resolverUdpClient.Send(new DNSMessage(header, new List<DNSQuestion>(){question}, new List<DNSAnswer>()).ToByteArray());
             var resolverResponse = await resolverUdpClient.ReceiveAsync();
