@@ -71,7 +71,7 @@ while (true)
             questions.Add(question);
         }
 
-        Console.WriteLine("Questions count: " + questions.SelectMany(x => x.Labels));
+        Console.WriteLine("Questions count: " + string.Concat(questions.SelectMany(x => x.Labels)));
 
         ushort counter = 0;
         foreach(var question in questions)
