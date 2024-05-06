@@ -60,9 +60,9 @@ while (true)
         List<DNSQuestion> questions = new List<DNSQuestion>();
         List<DNSAnswer> answers = new List<DNSAnswer>();
         Console.WriteLine(dnsHeaderQuery.QuestionCount);
+        var offset = 12;
         for (int i = 0; i < dnsHeaderQuery.QuestionCount; i++)
         {
-            var offset = 12;
             var array = receivedData.ToArray();
             Console.WriteLine("Array length after copying: " + array.Length);
             var questionQuery = new DNSQuestion().FromBytes(array[offset..], out offset);
